@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, request, redirect, session
+from flask import Flask, render_template, url_for, flash, request, redirect, session, make_response
 from wtforms import Form, BooleanField, TextField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from pymysql import escape_string as thwart
@@ -6,7 +6,11 @@ from functools import wraps
 import gc
 import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from content import Content
-from connect import connection
+#from connect import connection
+import sqlite3 as lite
+from datetime import datetime, timedelta
+
+DATABASE = "/var/www/FlaskApp/FlaskApp/users/users.db"
 
 app = Flask(__name__)
 
@@ -38,13 +42,18 @@ APP_CONTENT = {
 def index():
     error = ""
     try:
-        c, conn = connection()
+        #c, conn = connection()
+        con = lite.connect(DATABASE)
+        c = con.cursor()
         if request.method == "POST":
             
-            data = c.execute("SELECT * FROM users WHERE username = ('{0}')".format(thwart(request.form['username'])))
+            data = c.execute("SELECT * FROM users WHERE username (username) VALUES (?)",(thwart(request.form['username'])))
+
+            #data = c.execute("SELECT * FROM users WHERE username = ('{0}')".format(thwart(request.form['username'])))
             
             data = c.fetchone()[2]
-            
+            con.commit()
+            c.close()
             if sha256_crypt.varify(request.form["password"],data):
                 session['logged_in'] = True
                 session['username'] = request.form['username']
@@ -72,19 +81,24 @@ def dashboard():
 def login():
     error = ""
     try:
-        c, conn = connection()
+        #c, conn = connection()
+        con = lite.connect(DATABASE)
+        c = con.cursor()
         if request.method == "POST":
             
-            data = c.execute("SELECT * FROM users WHERE username = ('{0}')".format(thwart(request.form['username'])))
+            data = c.execute("SELECT * FROM users WHERE (username) VALUES (?)",(thwart(request.form['username'])))
+
+            #data = c.execute("SELECT * FROM users WHERE username = ('{0}')".format(thwart(request.form['username'])))
             
             data = c.fetchone()[2]
-            
+            #con.commit()
+            c.close()
             if sha256_crypt.varify(request.form["password"],data):
                 session['logged_in'] = True
                 session['username'] = request.form['username']
                 
                 flash("You are now logged in "+session['username']+"!")
-                return redirect(irl_for("/dashboard/"))
+                return redirect(url_for("/dashboard/"))
             else:
                 error = "Invalid credentials, try again."
                 
@@ -116,35 +130,66 @@ def register():
     #c, conn = connection() #if it runs, it will post a string
     try:
         form = RegistrationForm(request.form)
+        con = lite.connect(DATABASE)
+        c = con.cursor()
         if request.method == "POST" and form.validate():
             username = form.username.data
             email = form.email.data
             password = sha256_crypt.encrypt((str(form.password.data)))
             
-            c, conn = connection() # if it runs, it will post a string
+            #c, conn = connection() # if it runs, it will post a string
             
-            x = c.execute("SELECT * FROM users WHERE username = ('{0}')".format((thwart(username))))
+            c.execute("CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, email TEXT, settings TEXT, tracking TEXT, rank INT)")
+            x = c.execute("SELECT * FROM users WHERE username = (?)",(thwart(username)))
+
+            #x = c.execute("SELECT * FROM users WHERE username = ('{0}')".format((thwart(username))))
             
             if int(x) > 0:
                 flash("That username is already taken, please choose another.")
                 return render_template("register.html", form = form)
             else:
-                c.execute("INSERT INTO users (username,password,email,tracking) VALUES ('{0}', '{1}', '{2}', '{3}')".format(thwart(username), thwart(password), thwart(email), thwart("/dashboard/")))
+                c.execute("INSERT INTO users (username,password,email,tracking) VALUES (?,?,?,?)",(username, password, email, "/dashboard/"))
+                #c.execute("INSERT INTO users (username,password,email,tracking) VALUES ('{0}', '{1}', '{2}', '{3}')".format(thwart(username), thwart(password), thwart(email), thwart("/dashboard/")))
                 
-                conn.commit()
+                con.commit()
+                c.close()
+                #conn.commit()
                 flash("Thanks for registering, "+username+"!")
-                conn.close()
+                #conn.close()
                 gc.collect()
                 
                 session['logged_in'] = True
                 session['username'] = username
                       
                 return redirect(url_for('dashboard'))
+            con.commit()
+            c.close()
         return render_template("register.html", form = form)
             
     except Exception as e:
             return(str(e)) # remember to remove: for debugging only!
 
+## Sitemap        
+@app.route('/sitemap.xml', methods=["GET"])
+def sitemap():
+    try:
+        pages = []
+        week = (datetime.now() - timedelta(days = 7)).date().isoformat()
+        for rule in app.url_map.iter_rules():
+            if "GET" in rule.methods and len(rule.arguments) ==0:
+                pages.append(["http://68.183.30.133"+str(rule.rule), week])
+            
+        sitemap_xml = render_template('sitemap_template.xml', pages = pages)
+        response = make_response(sitemap_xml)
+        response.headers["Content-Type"] = "application/xml"
+        return response
+    except Exception as e:
+        return(str(e))
+    
+@app.route("/robots.txt")
+def robots():
+    return("User-agents: \nDisallow: /login \nDisallow: /register")
+        
 ## Error Handlers
 @app.errorhandler(404)
 def page_not_found(e):
