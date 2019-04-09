@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
       
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/SiteFavicon.png') }}">
       
 
-    <title>DIGIT 400</title>
+    <title>Major Courses</title>
     
     <script>
         $('#myModal').on('shown.bs.modal', function () {
@@ -29,16 +29,48 @@
 
       gtag('config', 'UA-136623248-1');
     </script>
-   
+      
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+      
+    
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: black;
+        }
+        #science {
+            width: 100%;
+            height: 300px;
+            background-color: #FF0000;
+        }
+        #hnss {
+            width: 100%;
+            height: 300px;
+            background-color: #00CCCC;
+        }
+        #engineering {
+            width: 100%;
+            height: 300px;
+            background-color: #FF8000;
+        }
+        #business {
+            width: 100%;
+            height: 300px;
+            background-color: #89CFF0;
+        }
+    </style>
   </head>
   <body>
 
     <!-- Nav Bar -->
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="/">
-            <img src="{{ url_for('static', filename='images/mainlogo.png') }}" width="50" height="30" alt="main logo for DIGIT 400 site">
+            <img src="{{ url_for('static', filename='images/SiteLogoUpdated.png') }}" width="50" height="30" alt="main logo for DIGIT 400 site">
         </a>
-  <a class="navbar-brand" href="/">DIGIT 400</a>
+  <a class="navbar-brand" href="/">Major Courses</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -56,18 +88,100 @@
       </li>
         {% else %}
       <li class="nav-item">
-        <a class="nav-link" href="#" data-toggle="modal" data-target="#exampleModalCenter">Login</a>
+        <a class="nav-link" href="#" data-toggle="modal" data-target="#exampleModalCenter"><i class="material-icons">account_box</i>Login</a>
       </li>
         {% endif %}
     </ul>
   </div>
 </nav><!-- END Nav Bar -->
       
-      <div>
+      <h1 class="main">Major Courses At Behrend</h1>
+      
+      <!-- Content -->
+      <br>
+      <div class="container-fluid" id="science">
+            <div class="dropdown.pull-right">
+              <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sciecne Majors
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Biology</a>
+                <a class="dropdown-item" href="#">Chemistry</a>
+                <a class="dropdown-item" href="#">Environmental Science</a>
+                <a class="dropdown-item" href="#">Mathematics</a>
+                <a class="dropdown-item" href="#">Nursing</a>
+                <a class="dropdown-item" href="#">Physics</a>
+                <a class="dropdown-item" href="#">Science</a>
+                <a class="dropdown-item" href="#">Secondary Education in Mathematics</a>
+              </div>
+            </div>
+      </div>
+      <br>
+      <div class="container-fluid" id="hnss">
+            <div class="dropdown.pull-right">
+              <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                H&amp;SS Majors
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Arts Administration</a>
+                <a class="dropdown-item" href="#">Communication</a>
+                <a class="dropdown-item" href="#">Creative Writing</a>
+                <a class="dropdown-item" href="/digit/">Digital Media, Arts, and Technology</a>
+                <a class="dropdown-item" href="#">Elementary and Early Childhood Education</a>
+                <a class="dropdown-item" href="#">English</a>
+                <a class="dropdown-item" href="#">General Arts and Sciences</a>
+                <a class="dropdown-item" href="#">History</a>
+                <a class="dropdown-item" href="#">Political Science</a>
+                <a class="dropdown-item" href="#">Psychology (B.A.)</a>
+                <a class="dropdown-item" href="#">Psychology (B.S.)</a>
+              </div>
+            </div>
+      </div>
+      <br>
+      <div class="container-fluid" id="engineering">
+            <div class="dropdown.pull-right">
+              <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Engineering Majors
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Computer Engineering</a>
+                <a class="dropdown-item" href="#">Computer Science</a>
+                <a class="dropdown-item" href="#">Electrical and Computer Engineering Technology</a>
+                <a class="dropdown-item" href="#">Electrical Engineering</a>
+                <a class="dropdown-item" href="#">Industrial Engineering</a>
+                <a class="dropdown-item" href="#">Interdisciplinary Business with Engineering Studies</a>
+                <a class="dropdown-item" href="#">Mechanical Engineering</a>
+                <a class="dropdown-item" href="#">Mechanical Engineering Technology</a>
+                <a class="dropdown-item" href="#">Plastics Engineering Technology</a>
+                <a class="dropdown-item" href="#">Software Engineering</a>
+              </div>
+            </div>
+      </div>
+      <br>
+      <div class="container-fluid" id="business">
+            <div class="dropdown.pull-right">
+              <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Business Majors
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Accounting</a>
+                <a class="dropdown-item" href="#">Business Economics</a>
+                <a class="dropdown-item" href="#">Economics</a>
+                <a class="dropdown-item" href="#">Finance</a>
+                <a class="dropdown-item" href="#">Interdisciplinary Business with Engineering Studies</a>
+                <a class="dropdown-item" href="#">International Business</a>
+                <a class="dropdown-item" href="#">Management Information Systems</a>
+                <a class="dropdown-item" href="#">Marketing</a>
+                <a class="dropdown-item" href="#">Project and Supply Chain Management</a>
+              </div>
+            </div>
+      </div>
+      <br>
+      <!-- <div>
       <video autoplay poster="{{ url_for('static', filename='images/space_cats.png') }}" muted loop style="width: 100%; max-height: 80%">
           <source src="{{ url_for('static', filename='videos/space_cats.mp4') }}" type="video/mp4">
       </video>
-      </div>
+      </div> -->
       <!-- Modal -->
         <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -94,7 +208,7 @@
         <br>
         <p><code>{{ error }}</code></p>
             <hr>
-                <p>Psst! You tryna get an account? <a href="/login/" style="text-decoration: none">Register here</a></p>
+                <p>Psst! You tryna get an account? <a href="/register/" style="text-decoration: none">Register here</a></p>
             
         </div>
         <div class="modal-footer">

@@ -1,0 +1,19 @@
+h1.main {
+    color: white; 
+    font-family: "Century Gothic", sans-serif;
+    text-align: center;
+}
+.loop {
+    color: aqua;
+}
+
+#basic {
+    color: coral;
+}
+div.dropdown {
+    float: right;
+}
+h1 {
+    color: red;
+    font-family: "Century Gothic", sans-serif;
+}

@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
       
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/SiteFavicon.png') }}">
       
 
-    <title>DIGIT 400</title>
+    <title>Major Courses</title>
     
     <script>
         $('#myModal').on('shown.bs.modal', function () {
@@ -30,15 +30,22 @@
       gtag('config', 'UA-136623248-1');
     </script>
 
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+      
+    
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      
   </head>
   <body>  
 
         <!-- Nav Bar -->
           <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class="navbar-brand" href="/">
-                <img src="{{ url_for('static', filename='images/mainlogo.png') }}" width="50" height="30" alt="main logo for DIGIT 400 site">
+                <img src="{{ url_for('static', filename='images/SiteLogoUpdated.png') }}" width="50" height="30" alt="main logo for DIGIT 400 site">
             </a>
-      <a class="navbar-brand" href="/">DIGIT 400</a>
+      <a class="navbar-brand" href="/">Major Courses</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -56,7 +63,7 @@
           </li>
             {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="#" data-toggle="modal" data-target="#exampleModalCenter">Login</a>
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#exampleModalCenter"><i class="material-icons">account_box</i>Login</a>
             </li>
             {% endif %}
         </ul>
