@@ -1,7 +1,18 @@
-h1.main {
-    color: white; 
-    font-family: "Century Gothic", sans-serif;
-    text-align: center;
+@import url('https://fonts.googleapis.com/css?family=Signika|Vollkorn');
+
+
+
+#wordmark {
+    font-family: 'Signika', sans-serif;
+}
+
+p {
+    font-family: 'Vollkorn', serif;
+    color: black;
+}
+p.bio {
+    font-family: 'Vollkorn', serif;
+    color: black;
 }
 .loop {
     color: aqua;
@@ -13,7 +24,24 @@ h1.main {
 div.dropdown {
     float: right;
 }
-h1 {
-    color: red;
-    font-family: "Century Gothic", sans-serif;
+h1{
+    font-family: 'Signika', sans-serif;
+    color: white;
+    text-align: center;
+}
+body {
+    background-color: black;
+}
+h4{
+    font-family: 'Signika', sans-serif;
+    color: white; 
+}
+h2{
+    font-family: 'Signika', sans-serif;
+    color: white;
+    text-align: center; 
+}
+.about {
+    font-family: 'Vollkorn', serif;
+    color: white;
 }

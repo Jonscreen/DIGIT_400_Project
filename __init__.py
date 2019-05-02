@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from bs4 import BeautifulSoup 
 import csv
 import requests
+import pandas as pd
 
 UPLOAD_FOLDER = "/var/www/FlaskApp/FlaskApp/uploads"
 
@@ -36,39 +37,11 @@ def login_required(f):
             flash("Please login.")
             return redirect(url_for('login'))
 
+        
+
 # Hi Jon, I'm just hacking in your system. I've updated your app with two functions: register and login.
 # You should be able to just call these functions whenever you need to login or register. GET the username, password, etc.
 # then just pass in the arguments into the system. I'm leaving this last step to you!
-
-def register(username,password,email):
-    with lite.connect("/var/www/FlaskApp/FlaskApp/users/users.db") as conn:
-        c = conn.cursor()
-        c.execute('CREATE TABLE IF NOT EXISTS user_log(id INTEGER PRIMARY KEY AUTOINCREMENT,username TEXT,password TEXT,email TEXT)')
-        test = c.execute("SELECT * FROM user_log WHERE username= ('{0}')".format((thwart(username))))
-        if test == True:
-            return False
-        else:
-            c.execute("INSERT INTO user_log (username,password,email) VALUES (?,?,?)",(thwart(username),thwart(password),thwart(email)))
-            conn.commit()
-            return True
-    return
-
-def login(username,password):
-    try:
-        with lite.connect("/var/www/FlaskApp/FlaskApp/users/users.db") as conn:
-            c = conn.cursor()
-            data = c.execute("SELECT * FROM user_log WHERE username = ('{0}')".format(thwart(username)))
-            data = c.fetchone()[2]
-            if sha256_crypt.verify(password, data):
-                session['logged_in'] = True
-                session['username'] = username
-                conn.commit()
-                return True
-            else:
-                return False
-    except:
-        return False
-    return
 
 APP_CONTENT = Content()
 
@@ -128,32 +101,48 @@ def dashboard():
 def login():
     error = ""
     try:
-        #c, conn = connection()
-        con = lite.connect(DATABASE)
-        c = con.cursor()
+        form = RegistrationForm(request.form)
         if request.method == "POST":
-            
-            data = c.execute("SELECT * FROM users WHERE (username) VALUES (?)",(thwart(request.form['username'])))
+            with lite.connect("/var/www/FlaskApp/FlaskApp/users/users.db") as conn:
+                c = conn.cursor()
 
-            #data = c.execute("SELECT * FROM users WHERE username = ('{0}')".format(thwart(request.form['username'])))
-            
-            data = c.fetchone()[2]
-            #con.commit()
-            c.close()
-            if sha256_crypt.varify(request.form["password"],data):
-                session['logged_in'] = True
-                session['username'] = request.form['username']
-                
-                flash("You are now logged in "+session['username']+"!")
-                return redirect(url_for("/dashboard/"))
-            else:
-                error = "Invalid credentials, try again."
-                
+                username = form.username.data
+                password = sha256_crypt.encrypt((str(form.password.data)))
+                data = c.execute("SELECT * FROM user_log WHERE username = ('{0}')".format(thwart(username)))
+
+                data = c.fetchone()[2]
+                if sha256_crypt.verify(request.form["password"],data):
+                    session['logged_in'] =True
+                    session['username'] = request.form['username']
+                    #conn.commit()
+                    #c.close()
+                    flash("You are now logged in "+session['username']+"!")
+                    return redirect(url_for("index"))
+                else:
+                    error = "invalid credentials, try again."
+
         return render_template("login.html", error = error)
     except Exception as e:
         flash(e)
         error = "Invalid credentials, try again."
-        return render_template("login.html", error = error)  
+        return render_template("login.html", error = error)   
+
+def login(username,password):
+    try:
+        with lite.connect("/var/www/FlaskApp/FlaskApp/users/users.db") as conn:
+            c = conn.cursor()
+            data = c.execute("SELECT * FROM user_log WHERE username = ('{0}')".format(thwart(username)))
+            data = c.fetchone()[2]
+            if sha256_crypt.verify(password, data):
+                session['logged_in'] = True
+                session['username'] = username
+                conn.commit()
+                return True
+            else:
+                return False
+    except:
+        return False
+    return
     
 @login_required
 @app.route("/logout/")
@@ -164,7 +153,7 @@ def logout():
     return redirect(url_for('index'))
     
 class RegistrationForm(Form):
-    username = TextField("Username", [validators.Length(min=4, max=20)])
+    username = TextField("Username", [validators.Length(min=3, max=20)])
     email = TextField("Email Address", [validators.Length(min=6, max=50)])
     password = PasswordField("New Password", [validators.Required(),
                                              validators.EqualTo('confirm',
@@ -177,70 +166,324 @@ def register():
     #c, conn = connection() #if it runs, it will post a string
     try:
         form = RegistrationForm(request.form)
-        con = lite.connect(DATABASE)
-        c = con.cursor()
         if request.method == "POST" and form.validate():
-            username = form.username.data
-            email = form.email.data
-            password = sha256_crypt.encrypt((str(form.password.data)))
-            
-            #c, conn = connection() # if it runs, it will post a string
-            
-            c.execute("CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, email TEXT, settings TEXT, tracking TEXT, rank INT)")
-            x = c.execute("SELECT * FROM users WHERE username = (?)",(thwart(username)))
+            with lite.connect("/var/www/FlaskApp/FlaskApp/users/users.db") as conn:
+                c = conn.cursor()
 
-            #x = c.execute("SELECT * FROM users WHERE username = ('{0}')".format((thwart(username))))
-            
-            if int(x) > 0:
-                flash("That username is already taken, please choose another.")
-                return render_template("register.html", form = form)
-            else:
-                c.execute("INSERT INTO users (username,password,email,tracking) VALUES (?,?,?,?)",(username, password, email, "/dashboard/"))
-                #c.execute("INSERT INTO users (username,password,email,tracking) VALUES ('{0}', '{1}', '{2}', '{3}')".format(thwart(username), thwart(password), thwart(email), thwart("/dashboard/")))
-                
-                con.commit()
-                c.close()
-                #conn.commit()
-                flash("Thanks for registering, "+username+"!")
-                #conn.close()
-                gc.collect()
-                
-                session['logged_in'] = True
-                session['username'] = username
-                      
-                return redirect(url_for('dashboard'))
-            con.commit()
-            c.close()
+                username = form.username.data
+                email = form.email.data
+                password = sha256_crypt.encrypt((str(form.password.data)))
+
+                    #c, conn = connection() # if it runs, it will post a string
+
+                c.execute('CREATE TABLE IF NOT EXISTS user_log(id INTEGER PRIMARY KEY AUTOINCREMENT,username TEXT,password TEXT,email TEXT)')
+                test = c.execute("SELECT * FROM user_log WHERE username= ('{0}')".format((thwart(username))))
+
+                    #x = c.execute("SELECT * FROM users WHERE username = ('{0}')".format((thwart(username))))
+
+                if test == True:
+                    flash("That username is already taken, please choose another.")
+                    return render_template("register.html", form = form)
+                else:
+                    c.execute("INSERT INTO user_log (username,password,email) VALUES (?,?,?)",(thwart(username),thwart(password),thwart(email)))
+                        #c.execute("INSERT INTO users (username,password,email,tracking) VALUES ('{0}', '{1}', '{2}', '{3}')".format(thwart(username), thwart(password), thwart(email), thwart("/dashboard/")))
+
+                    conn.commit()
+                    c.close()
+                        #conn.commit()
+                    flash("Thanks for registering, "+username+"!")
+                        #conn.close()
+                    gc.collect()
+
+                    session['logged_in'] = True
+                    session['username'] = username
+
+                    return redirect(url_for('dashboard'))
         return render_template("register.html", form = form)
             
     except Exception as e:
             return(str(e)) # remember to remove: for debugging only!
+###START MAJORS  
+
+##SCIENCE MAJORS
+@app.route('/bio/')
+def bio():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/biocourses.csv')
+        return render_template("bio.html", table = [df.to_html(classes='bio')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+
+@app.route('/chem/')
+def chem():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/chemcourses.csv')
+        return render_template("chem.html", table = [df.to_html(classes='chem')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+
+@app.route('/ensci/')
+def ensci():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/enviroscicourses.csv')
+        return render_template("ensci.html", table = [df.to_html(classes='ensci')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+
+@app.route('/math/')
+def math():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/mathcourses.csv')
+        return render_template("math.html", table = [df.to_html(classes='math')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+
+@app.route('/phys/')
+def phys():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/physicscourses.csv')
+        return render_template("phys.html", table = [df.to_html(classes='phys')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/sci/')
+def sci():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/scicourses.csv')
+        return render_template("sci.html", table = [df.to_html(classes='sci')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/seced/')
+def seced():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/secedcourses.csv')
+        return render_template("seced.html", table = [df.to_html(classes='seced')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+##H&SS MAJORS
+
+@app.route('/artsa/')
+def artsa():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/aacourses.csv')
+        return render_template("artsa.html", table = [df.to_html(classes='artsa')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/comm/')
+def comm():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/commcourses.csv')
+        return render_template("comm.html", table = [df.to_html(classes='comm')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/cw/')
+def cw():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/cwcourses.csv')
+        return render_template("cw.html", table = [df.to_html(classes='cw')])
+    except Exception as e:
+        return render_template("500.html", error = e)
 
 @app.route('/digit/')
 def digit():
     try:
-        source = requests.get('https://bulletins.psu.edu/undergraduate/colleges/behrend/digital-media-arts-technology-ba/#programrequirementstext').text 
-            #using requests to grab text from website
-
-        soup = BeautifulSoup(source, 'lxml') 
-            #assigning soup to BeautifulSoup, which is being assigned to the source variable and lxml parcer.
-
-            # just making a list to save your course codes
-        course_list = []
-
-        for td in soup.find_all('td', class_='codecol')[:42]: 
-            #For loop that looks over the page and takes all of the <td> tags with the "codecol" tag. Stopping the loop after 42 iterations is necessary to prevent loop from attempting to scrap data from other parts of the site.
-
-            coursecode = td.a.text 
-                #assigning cousecode as a variable and giving it a path to follow. The added ".text" makes sure it only grabs the text in the <a> tag.
-            course_list.append(coursecode.split())
-            print(coursecode)
-                #prints coursecode and displays them.
-        
-        output = course_list
-        return render_template("digit.html", output = output)
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/digitcourses.csv')
+        return render_template("digit.html", table = [df.to_html(classes='digit')])
     except Exception as e:
         return render_template("500.html", error = e)
+    
+@app.route('/engl/')
+def engl():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/englcourses.csv')
+        return render_template("engl.html", table = [df.to_html(classes='engl')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/hist/')
+def hist():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/histcourses.csv')
+        return render_template("hist.html", table = [df.to_html(classes='hist')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/plsc/')
+def plsc():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/plsccourses.csv')
+        return render_template("plsc.html", table = [df.to_html(classes='plsc')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+
+@app.route('/psychba/')
+def psychba():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/psychbacourses.csv')
+        return render_template("psychba.html", table = [df.to_html(classes='psychba')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+
+@app.route('/psychbs/')
+def psychbs():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/psychbscourses.csv')
+        return render_template("psychbs.html", table = [df.to_html(classes='psychbs')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+##ENGINEERING MAJORS
+
+@app.route('/compeng/')
+def compeng():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/compengcourses.csv')
+        return render_template("compeng.html", table = [df.to_html(classes='compeng')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/compsci/')
+def compsci():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/compscicourses.csv')
+        return render_template("compsci.html", table = [df.to_html(classes='compsci')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/ecet/')
+def ecet():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/ecetcourses.csv')
+        return render_template("ecet.html", table = [df.to_html(classes='ecet')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/elec/')
+def elec():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/eleccourses.csv')
+        return render_template("elec.html", table = [df.to_html(classes='elec')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/indust/')
+def indust():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/industcourses.csv')
+        return render_template("indust.html", table = [df.to_html(classes='indust')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/interd/')
+def interd():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/interdcourses.csv')
+        return render_template("interd.html", table = [df.to_html(classes='interd')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/mecheng/')
+def mecheng():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/mechengcourses.csv')
+        return render_template("mecheng.html", table = [df.to_html(classes='mecheng')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/mechengT/')
+def mechengT():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/mechengTcourses.csv')
+        return render_template("mechengT.html", table = [df.to_html(classes='mechengT')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/plastic/')
+def plastic():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/plasticcourses.csv')
+        return render_template("plastic.html", table = [df.to_html(classes='plastic')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/softeng/')
+def softeng():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/softengcourses.csv')
+        return render_template("softeng.html", table = [df.to_html(classes='softeng')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+
+##BUSINESS MAJORS
+@app.route('/acctg/')
+def acctg():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/acctcourses.csv')
+        return render_template("acctg.html", table = [df.to_html(classes='acctg')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/busecon/')
+def busecon():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/buseconcourses.csv')
+        return render_template("busecon.html", table = [df.to_html(classes='busecon')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/econ/')
+def econ():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/econcourses.csv')
+        return render_template("econ.html", table = [df.to_html(classes='econ')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/finance/')
+def finance():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/financecourses.csv')
+        return render_template("finance.html", table = [df.to_html(classes='finance')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/intbus/')
+def intbus():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/intbuscourses.csv')
+        return render_template("intbus.html", table = [df.to_html(classes='intbus')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/mis/')
+def mis():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/miscourses.csv')
+        return render_template("mis.html", table = [df.to_html(classes='mis')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/mark/')
+def mark():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/markcourses.csv')
+        return render_template("mark.html", table = [df.to_html(classes='mark')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+    
+@app.route('/pnsm/')
+def pnsm():
+    try:
+        df = pd.read_csv('/var/www/FlaskApp/FlaskApp/templates/pnscourses.csv')
+        return render_template("pnsm.html", table = [df.to_html(classes='pnsm')])
+    except Exception as e:
+        return render_template("500.html", error = e)
+###END MAJORS  
 
 @app.route('/uploads/', methods=["GET", "POST"])
 #@login_required
@@ -264,6 +507,13 @@ def upload_file():
             
     except Exception as e:
         return str(e) # remove for production on all of these exceptions
+    
+@app.route('/about/')
+def about():
+    try:
+        return render_template("about.html")
+    except Exception as e:
+        return render_template("500.html", error = e)
     
 @app.route('/welcome/')
 def welcome_to_jinja():

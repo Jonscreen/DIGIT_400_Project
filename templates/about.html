@@ -1,0 +1,20 @@
+{% extends "header.html" %}
+
+{% block body %}
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+      
+    
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <h4>About</h4>
+    <br>
+    <p class="about">Hello! My name is Jonathan Hayden, but most people call me Jon. I am a senior a Penn State Behrend studying Digital Media, Arts, &amp; Technology. I will be graduating this May, and I wanted to use this project as an opportunity to help new and potential Behrend students with a question I struggled with throughout my time spent at Behrend. That is "Why do I have to take this class?". I think that there are a lot of resources available that provide students with information giving a brief overview of courses, and some are pretty self explantitory. A Business major is going to have to take a business writing class for obvious reasons, but would a Digital Media, Arts, &amp; Technology major understand why they are required to take an introductory photography class? I didn't, and I want to help people understand why these outlier courses are important.</p>
+    <br>
+    <p class="about">The best way for potential students to get this information is from people who have already taken those courses. Specifically those who have already graduated and may be using the skills they have learned in those classes for their careers. My plan is to invite Penn State Behrend graduates to comment on a few courses that they believe they can help provide clarity for. "What from this course has helped you in your career?", "Did you understand the need for this class before taking it?", "Would you recommend this course over other options?". These are the types of questions I wish for commenters to answer. I want to only have those invited comment on courses, because it allows me to know who is making these comments and I know they are comming from a place of experience.</p>
+    <br>
+    <p class="about">My primary goal when creating this web app, was to get the course lists of each major offered at Behrend listed. To do this I used two different Python libraries, <a href="https://pypi.org/project/requests/">Requests</a> and <a href="https://pypi.org/project/beautifulsoup4/">BeautifulSoup.</a> These libraries allow me to scrape data off of a website, and display it on my own. After that I can do things like put the data into a .csv file. I used these libraries to take the list of required courses for each major off of Penn State Behrend's website. My plans for finishing this web app, are to set up a place for account holders to comment on classes and develop pages for each indiviual course.</p>
+
+{% endblock %}

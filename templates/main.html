@@ -48,17 +48,17 @@
         }
         #hnss {
             width: 100%;
-            height: 300px;
+            height: 325px;
             background-color: #00CCCC;
         }
         #engineering {
             width: 100%;
-            height: 300px;
+            height: 325px;
             background-color: #FF8000;
         }
         #business {
             width: 100%;
-            height: 300px;
+            height: 345px;
             background-color: #89CFF0;
         }
     </style>
@@ -70,7 +70,7 @@
         <a class="navbar-brand" href="/">
             <img src="{{ url_for('static', filename='images/SiteLogoUpdated.png') }}" width="50" height="30" alt="main logo for DIGIT 400 site">
         </a>
-  <a class="navbar-brand" href="/">Major Courses</a>
+  <a id="wordmark" class="navbar-brand" href="/">Major Courses</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -78,6 +78,9 @@
     <ul class="navbar-nav">
       <li class="nav-item active">
         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/about/">About</a>
       </li>
         {% if session.logged_in %}
       <li class="nav-item">
@@ -88,7 +91,7 @@
       </li>
         {% else %}
       <li class="nav-item">
-        <a class="nav-link" href="#" data-toggle="modal" data-target="#exampleModalCenter"><i class="material-icons">account_box</i>Login</a>
+        <a class="nav-link" href="/login/" data-toggle="modal" data-target="#exampleModalCenter"><i class="material-icons">account_box</i>Login</a>
       </li>
         {% endif %}
     </ul>
@@ -100,80 +103,105 @@
       <!-- Content -->
       <br>
       <div class="container-fluid" id="science">
-            <div class="dropdown.pull-right">
-              <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Sciecne Majors
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Biology</a>
-                <a class="dropdown-item" href="#">Chemistry</a>
-                <a class="dropdown-item" href="#">Environmental Science</a>
-                <a class="dropdown-item" href="#">Mathematics</a>
-                <a class="dropdown-item" href="#">Nursing</a>
-                <a class="dropdown-item" href="#">Physics</a>
-                <a class="dropdown-item" href="#">Science</a>
-                <a class="dropdown-item" href="#">Secondary Education in Mathematics</a>
-              </div>
+          <br>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">The School of Science</h5>
+                    <p class="card-text">According to Penn State Behrend's website:<br><br>"What’s the formula for academic success? Access to the faculty and research facilities of a global university + learning in smaller-sized classes = the Penn State Behrend School of Science.<br>Our students are given a hands-on, practical science education guided by experienced faculty. They also have opportunities to conduct substantive research experiences not typically offered at the undergraduate level."</p>
+                    <div class="dropdown.pull-left">
+                      <button class="btn btn-secondary dropdown-toggle float-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Science Majors
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/bio/">Biology</a>
+                        <a class="dropdown-item" href="/chem/">Chemistry</a>
+                        <a class="dropdown-item" href="/ensci/">Environmental Science</a>
+                        <a class="dropdown-item" href="/math/">Mathematics</a>
+                        <a class="dropdown-item" href="/phys/">Physics</a>
+                        <a class="dropdown-item" href="/sci/">Science</a>
+                        <a class="dropdown-item" href="/seced/">Secondary Education in Mathematics</a>
+                      </div>
+                    </div>
+                </div>
             </div>
       </div>
       <br>
       <div class="container-fluid" id="hnss">
-            <div class="dropdown.pull-right">
-              <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                H&amp;SS Majors
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Arts Administration</a>
-                <a class="dropdown-item" href="#">Communication</a>
-                <a class="dropdown-item" href="#">Creative Writing</a>
-                <a class="dropdown-item" href="/digit/">Digital Media, Arts, and Technology</a>
-                <a class="dropdown-item" href="#">Elementary and Early Childhood Education</a>
-                <a class="dropdown-item" href="#">English</a>
-                <a class="dropdown-item" href="#">General Arts and Sciences</a>
-                <a class="dropdown-item" href="#">History</a>
-                <a class="dropdown-item" href="#">Political Science</a>
-                <a class="dropdown-item" href="#">Psychology (B.A.)</a>
-                <a class="dropdown-item" href="#">Psychology (B.S.)</a>
-              </div>
+          <br>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">The School of Humanities &amp; Social Sciences</h5>
+                    <p class="card-text">According to Penn State Behrend's website:<br><br>"The School of Humanities and Social Sciences offers diverse four-year degree programs that develop both intellect and practical skills for employment. Our students are tomorrow’s historians, writers, communicators, educators, and critical thinkers, exploring and reflecting on our society and the larger world beyond.<br>Highly accomplished School of Humanities and Social Sciences faculty members are scholars with international reputations for research, award-winning writers, and skilled teachers with years of practical professional experiences."</p>
+                    <div class="dropdown.pull-left">
+                      <button class="btn btn-secondary dropdown-toggle float-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        H&amp;SS Majors
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/artsa/">Arts Administration</a>
+                        <a class="dropdown-item" href="/comm/">Communication</a>
+                        <a class="dropdown-item" href="/cw/">Creative Writing</a>
+                        <a class="dropdown-item" href="/digit/">Digital Media, Arts, and Technology</a>
+                        <a class="dropdown-item" href="/engl/">English</a>
+                        <a class="dropdown-item" href="/hist/">History</a>
+                        <a class="dropdown-item" href="/plsc/">Political Science</a>
+                        <a class="dropdown-item" href="/psychba/">Psychology (B.A.)</a>
+                        <a class="dropdown-item" href="/psychbs/">Psychology (B.S.)</a>
+                      </div>
+                    </div>
+                </div>
             </div>
       </div>
       <br>
       <div class="container-fluid" id="engineering">
-            <div class="dropdown.pull-right">
-              <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Engineering Majors
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Computer Engineering</a>
-                <a class="dropdown-item" href="#">Computer Science</a>
-                <a class="dropdown-item" href="#">Electrical and Computer Engineering Technology</a>
-                <a class="dropdown-item" href="#">Electrical Engineering</a>
-                <a class="dropdown-item" href="#">Industrial Engineering</a>
-                <a class="dropdown-item" href="#">Interdisciplinary Business with Engineering Studies</a>
-                <a class="dropdown-item" href="#">Mechanical Engineering</a>
-                <a class="dropdown-item" href="#">Mechanical Engineering Technology</a>
-                <a class="dropdown-item" href="#">Plastics Engineering Technology</a>
-                <a class="dropdown-item" href="#">Software Engineering</a>
-              </div>
+          <br>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">The School of Engineering</h5>
+                    <p class="card-text">According to Penn State Behrend's website:<br><br>"The School of Engineering is ranked among the best undergraduate engineering programs nationwide. Why? State-of-the-art facilities, award-winning faculty, both engineering and engineering technology program offerings, small class sizes, emphasis on meaningful student design and research experiences, and superior internship and job placement are just a few of the reasons.<br>The School of Engineering is partnered with the Black School of Business to give engineering and engineering technology students unique multidisciplinary learning experiences that are highly valued by global employers."</p>
+                    <div class="dropdown.pull-left">
+                      <button class="btn btn-secondary dropdown-toggle float-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Engineering Majors
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/compeng/">Computer Engineering</a>
+                        <a class="dropdown-item" href="/compsci/">Computer Science</a>
+                        <a class="dropdown-item" href="/ecet/">Electrical and Computer Engineering Technology</a>
+                        <a class="dropdown-item" href="/elec/">Electrical Engineering</a>
+                        <a class="dropdown-item" href="/indust/">Industrial Engineering</a>
+                        <a class="dropdown-item" href="/interd/">Interdisciplinary Business with Engineering Studies</a>
+                        <a class="dropdown-item" href="/mecheng/">Mechanical Engineering</a>
+                        <a class="dropdown-item" href="/mechengT/">Mechanical Engineering Technology</a>
+                        <a class="dropdown-item" href="/plastic/">Plastics Engineering Technology</a>
+                        <a class="dropdown-item" href="/softeng/">Software Engineering</a>
+                      </div>
+                    </div>
+                </div>
             </div>
       </div>
       <br>
       <div class="container-fluid" id="business">
-            <div class="dropdown.pull-right">
-              <button class="btn btn-secondary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Business Majors
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Accounting</a>
-                <a class="dropdown-item" href="#">Business Economics</a>
-                <a class="dropdown-item" href="#">Economics</a>
-                <a class="dropdown-item" href="#">Finance</a>
-                <a class="dropdown-item" href="#">Interdisciplinary Business with Engineering Studies</a>
-                <a class="dropdown-item" href="#">International Business</a>
-                <a class="dropdown-item" href="#">Management Information Systems</a>
-                <a class="dropdown-item" href="#">Marketing</a>
-                <a class="dropdown-item" href="#">Project and Supply Chain Management</a>
-              </div>
+          <br>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">The Black School of Business</h5>
+                    <p class="card-text">According to Penn State Behrend's website:<br><br>"The Black School of Business is the only business school in the region accredited by AACSB International, the premier accrediting agency for management education. You’ll also find us listed among America’s Best Business Schools and the Best 300 Business Schools in the country.<br>Black School of Business students benefit from all the resources of a global research institution while enjoying all the advantages of learning in a smaller, multidisciplinary setting. We educate in a high-tech academic environment, the Jack Burke Research and Economic Development Center, and offer unique learning opportunities made possible by a $20 million endowment from the late insurance executive Samuel P. Black Jr. and his wife, Irene."</p>
+                    <div class="dropdown.pull-left">
+                      <button class="btn btn-secondary dropdown-toggle float-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Business Majors
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/acctg/">Accounting</a>
+                        <a class="dropdown-item" href="/busecon/">Business Economics</a>
+                        <a class="dropdown-item" href="/econ/">Economics</a>
+                        <a class="dropdown-item" href="/finance/">Finance</a>
+                        <a class="dropdown-item" href="/interd/">Interdisciplinary Business with Engineering Studies</a>
+                        <a class="dropdown-item" href="/intbus/">International Business</a>
+                        <a class="dropdown-item" href="/mis/">Management Information Systems</a>
+                        <a class="dropdown-item" href="/mark/">Marketing</a>
+                        <a class="dropdown-item" href="/pnsm/">Project and Supply Chain Management</a>
+                      </div>
+                    </div>
+                </div>
             </div>
       </div>
       <br>

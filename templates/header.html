@@ -45,7 +45,7 @@
             <a class="navbar-brand" href="/">
                 <img src="{{ url_for('static', filename='images/SiteLogoUpdated.png') }}" width="50" height="30" alt="main logo for DIGIT 400 site">
             </a>
-      <a class="navbar-brand" href="/">Major Courses</a>
+      <a id="wordmark" class="navbar-brand" href="/">Major Courses</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -53,6 +53,9 @@
         <ul class="navbar-nav">
           <li class="nav-item active">
             <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">About</a>
           </li>
             {% if session.logged_in %}
           <li class="nav-item">
